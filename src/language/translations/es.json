@@ -1,0 +1,21 @@
+{
+  "screen": {
+    "news": {
+      "title" : "Noticias",
+      "searchPlaceholder": "Buscar",
+      "searchCancel": "Cancelar"
+    },
+    "details": {
+      "author": "Autor"
+    },
+    "settings": {
+      "title" : "Ajustes",
+      "theme": "Tema Oscuro",
+      "language": {
+        "title": "Idiomas",
+        "en-US": "English (United States)",
+        "es": "Español"
+      }
+    }
+  }
+}

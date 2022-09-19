@@ -1,0 +1,21 @@
+{
+  "screen": {
+    "news": {
+      "title" : "News",
+      "searchPlaceholder": "Search",
+      "searchCancel": "Cancel"
+    },
+    "details": {
+      "author": "Author"
+    },
+    "settings": {
+      "title" : "Settings",
+      "theme": "Dark Theme",
+      "language": {
+        "title": "Languages",
+        "en-US": "English (United States)",
+        "es": "Español"
+      }
+    }
+  }
+}
