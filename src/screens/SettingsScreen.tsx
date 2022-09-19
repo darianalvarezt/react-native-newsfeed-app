@@ -1,7 +1,7 @@
 import React, {useContext, useState} from 'react';
 import {StatusBar, StyleSheet} from 'react-native';
 import {useTheme} from '@react-navigation/native';
-import {ThemeContext} from '../context/ThemeContext';
+import {ThemeContext} from '../context';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {useTranslation} from 'react-i18next';
 import SettingItem from '../components/SettingItem';

@@ -4,10 +4,10 @@ export default interface IQuery {
   domains?: string;
   excludeDomains?: string;
   searchIn?: 'title' | 'description' | 'content';
-  language?: 'en' | 'es';
+  language?: string;
   sortBy?: 'relevancy' | 'popularity' | 'publishedAt';
   from?: Date;
   to?: Date;
   pageSize?: number;
   page?: number;
-}
+};

@@ -1,5 +1,4 @@
 import React from 'react';
-import {Toasts} from '@backpackapp-io/react-native-toast';
 import {
   MutationCache,
   QueryCache,
@@ -26,10 +25,7 @@ const queryClient = new QueryClient(config);
 
 const ApiProvider = ({children}: IProps) => {
   return (
-    <QueryClientProvider client={queryClient}>
-      {children}
-      <Toasts />
-    </QueryClientProvider>
+    <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
   );
 };
 

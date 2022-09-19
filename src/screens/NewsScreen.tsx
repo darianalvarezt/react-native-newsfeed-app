@@ -9,13 +9,16 @@ import {
   View,
   RefreshControl,
 } from 'react-native';
+import {StackScreenProps} from '@react-navigation/stack';
 import {useTranslation} from 'react-i18next';
-import useFetchNews from '../hooks/useFetchNews';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import {IArticle} from '../interfaces';
 import {useTheme} from '@react-navigation/native';
+
+import useFetchNews from '../hooks/useFetchNews';
+import {IArticle} from '../interfaces';
 import SearchBar from '../components/SearchBar';
 import useDebounce from '../hooks/useDebounce';
+import {NewsStackParamList} from '../navigators/NewsNavigator';
 
 const styles = StyleSheet.create({
   sectionContainer: {
@@ -31,9 +34,46 @@ const styles = StyleSheet.create({
     width: 200,
     height: 100,
   },
+  errorImage: {
+    width: '100%',
+    height: 500,
+  },
+  errorContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  itemContainer: {
+    flexDirection: 'row',
+    marginHorizontal: 10,
+  },
+  itemText: {
+    flex: 1,
+    flexWrap: 'wrap',
+    paddingLeft: 10,
+  },
+  separator: {
+    height: 0.5,
+    marginVertical: 10,
+    width: '100%',
+  },
 });
 
-const NewsScreen = ({navigation}) => {
+const noDataImage = require('../../assets/no_data.png');
+
+interface Map {
+  [key: string]: string;
+}
+
+const localeMap: Map = {
+  en: 'en',
+  'en-US': 'en',
+  es: 'es',
+};
+
+type Props = StackScreenProps<NewsStackParamList, 'News'>;
+
+const NewsScreen = ({navigation}: Props) => {
   const {i18n} = useTranslation();
   const {colors} = useTheme();
 
@@ -50,7 +90,7 @@ const NewsScreen = ({navigation}) => {
     useFetchNews({
       q: query,
       sortBy: 'publishedAt',
-      language: i18n.language === 'en-US' ? 'en' : i18n.language,
+      language: localeMap[i18n.language],
     });
 
   useEffect(() => {
@@ -95,57 +135,50 @@ const NewsScreen = ({navigation}) => {
   const ItemView = ({item}: Item) => {
     return (
       <TouchableOpacity
-        style={{flexDirection: 'row', marginHorizontal: 10}}
+        style={styles.itemContainer}
         onPress={() => handleNavigateToDetails(item)}>
         <Image
           style={styles.image}
+          defaultSource={noDataImage}
           source={{
-            uri: item.urlToImage,
+            uri: item?.urlToImage,
           }}
         />
-        <Text
-          style={{
-            flex: 1,
-            flexWrap: 'wrap',
-            paddingLeft: 10,
-            color: colors.text,
-          }}>
-          {item.title.toUpperCase()}
+        <Text style={{...styles.itemText, color: colors.text}}>
+          {item?.title.toUpperCase()}
         </Text>
       </TouchableOpacity>
     );
   };
 
   const ItemSeparatorView = () => {
-    return (
-      <View
-        style={{
-          height: 0.5,
-          marginVertical: 10,
-          width: '100%',
-          backgroundColor: '#C8C8C8',
-        }}
-      />
-    );
+    return <View style={{...styles.separator, backgroundColor: colors.text}} />;
   };
 
   return (
     <SafeAreaView style={styles.sectionContainer}>
-      <FlatList
-        data={data}
-        keyExtractor={(item, index) => index.toString()}
-        ItemSeparatorComponent={ItemSeparatorView}
-        renderItem={ItemView}
-        ListFooterComponent={renderFooter}
-        onEndReached={loadMore}
-        onEndReachedThreshold={0.3}
-        refreshControl={
-          <RefreshControl
-            refreshing={isRefetching}
-            onRefresh={() => refetch()}
-          />
-        }
-      />
+      {error ? (
+        <View style={styles.errorContainer}>
+          <Image style={styles.errorImage} source={noDataImage} />
+          <Text>{JSON.stringify(error, null, 2)}</Text>
+        </View>
+      ) : (
+        <FlatList
+          data={data?.pages || []}
+          keyExtractor={(item, index) => index.toString()}
+          ItemSeparatorComponent={ItemSeparatorView}
+          renderItem={ItemView}
+          ListFooterComponent={error ? null : renderFooter}
+          onEndReached={loadMore}
+          onEndReachedThreshold={0.3}
+          refreshControl={
+            <RefreshControl
+              refreshing={isRefetching}
+              onRefresh={() => refetch()}
+            />
+          }
+        />
+      )}
     </SafeAreaView>
   );
 };
